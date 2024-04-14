@@ -12,6 +12,19 @@ Use this with <https://direnv.net> to change UMASK per directory.
 - **Default Umask Backup:** Utilizes a fallback umask set at session start if no custom umask is specified.
 - **Environment Flexibility:** Ensures consistent umask settings across various shell instances and working conditions.
 
+## Configuration
+
+### Silent Mode
+
+The `silent` mode controls whether the plugin outputs status messages when the umask is set. To configure this behavior, use the `zstyle` command:
+
+```zsh
+# Enable silent mode - suppresses messages about umask changes
+zstyle ':direnv-umask-hook' silent true
+
+# Disable silent mode - enables messages about umask changes
+zstyle ':direnv-umask-hook' silent false
+
 ## Install Instructions
 
 I like zengom so lets start there:

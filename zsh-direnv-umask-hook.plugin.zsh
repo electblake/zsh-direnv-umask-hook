@@ -10,16 +10,23 @@ DEFAULT_UMASK=$(umask)
 export DEFAULT_UMASK
 
 # Function to update umask
-# This function will set the umask to a user-defined value specified in the UMASK variable,
-# or revert to the initially recorded default if UMASK is not set.
+# Sets the umask based on the UMASK environment variable, or falls back to DEFAULT_UMASK if UMASK is not set.
 _umask_hook() {
-  # Check if a custom umask is set in UMASK
   if [[ -n $UMASK ]]; then
-    if ! zstyle ':direnv-umask-hook' silent true && printf "-- umask-hook: set $UMASK\n"
+    # Check if silent mode is not enabled before printing; print umask setting message.
+    if ! zstyle -t ':direnv-umask-hook' silent; then
+      printf "-- umask-hook: set to $UMASK\n"
+    fi
     umask "$UMASK"
   else
-    if ! zstyle ':direnv-umask-hook' silent true && printf "-- umask-hook: reset to $DEFAULT_UMASK\n"
-    umask "$DEFAULT_UMASK"
+    local current_umask=$(umask)
+    if [[ "$current_umask" != "$DEFAULT_UMASK" ]]; then
+      # Print message if umask is reset and silent mode is not enabled.
+      if ! zstyle -t ':direnv-umask-hook' silent; then
+        printf "-- umask-hook: reset to $DEFAULT_UMASK\n"
+      fi
+      umask "$DEFAULT_UMASK"
+    fi
   fi
 }
 
